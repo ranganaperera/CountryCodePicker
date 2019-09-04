@@ -123,7 +123,7 @@ class _SelectionDialogState extends State<SelectionDialog> {
       return widget.emptySearchBuilder(context);
     }
 
-    return Center(child: Text('No Country Found'));
+    return Center(child: Text('No Country Found', style: widget.textStyle,));
   }
 
   @override
