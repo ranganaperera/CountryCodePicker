@@ -19,6 +19,9 @@ class CountryCodePicker extends StatefulWidget {
   final InputDecoration searchDecoration;
   final TextStyle searchStyle;
   final WidgetBuilder emptySearchBuilder;
+  final Color backgroundColor;
+  final Color searchIconColor;
+  final TextStyle dialogTextStyle;
 
   /// shows the name of the country instead of the dialcode
   final bool showOnlyCountryWhenClosed;
@@ -46,7 +49,10 @@ class CountryCodePicker extends StatefulWidget {
     this.emptySearchBuilder,
     this.showOnlyCountryWhenClosed = false,
     this.alignLeft = false,
-    this.showFlag = true
+    this.showFlag = true,
+    this.searchIconColor,
+    this.backgroundColor,
+    this.dialogTextStyle,
   });
 
   @override
@@ -144,7 +150,10 @@ class _CountryCodePickerState extends State<CountryCodePicker> {
           emptySearchBuilder: widget.emptySearchBuilder,
           searchDecoration: widget.searchDecoration,
           searchStyle: widget.searchStyle,
-          showFlag: widget.showFlag
+          showFlag: widget.showFlag,
+          backgroundColor: widget.backgroundColor,
+          searchIconColor: widget.searchIconColor,
+          textStyle: widget.dialogTextStyle,
         ),
     ).then((e) {
       if (e != null) {

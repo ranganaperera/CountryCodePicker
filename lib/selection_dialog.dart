@@ -9,6 +9,9 @@ class SelectionDialog extends StatefulWidget {
   final TextStyle searchStyle;
   final WidgetBuilder emptySearchBuilder;
   final bool showFlag;
+  final Color backgroundColor;
+  final Color searchIconColor;
+  final TextStyle textStyle;
 
   /// elements passed as favorite
   final List<CountryCode> favoriteElements;
@@ -19,10 +22,13 @@ class SelectionDialog extends StatefulWidget {
     this.emptySearchBuilder,
     InputDecoration searchDecoration = const InputDecoration(),
     this.searchStyle,
-    this.showFlag
+    this.showFlag,
+    this.backgroundColor,
+    this.searchIconColor,
+    this.textStyle,
   }) :
     assert(searchDecoration != null, 'searchDecoration must not be null!'),
-    this.searchDecoration = searchDecoration.copyWith(prefixIcon: Icon(Icons.search)),
+    this.searchDecoration = searchDecoration.copyWith(prefixIcon: Icon(Icons.search, color: searchIconColor ?? Colors.black,)),
     super(key: key);
 
   @override
@@ -35,51 +41,51 @@ class _SelectionDialogState extends State<SelectionDialog> {
 
   @override
   Widget build(BuildContext context) => SimpleDialog(
-      title: Column(
-        children: <Widget>[
-          TextField(
-            style: widget.searchStyle,
-            decoration: widget.searchDecoration,
-            onChanged: _filterElements,
-          ),
-        ],
-      ),
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: ListView(
-            children: [
-              widget.favoriteElements.isEmpty
-                  ? const DecoratedBox(decoration: BoxDecoration())
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[]
-                        ..addAll(widget.favoriteElements
-                            .map(
-                              (f) => SimpleDialogOption(
-                                    child: _buildOption(f),
-                                    onPressed: () {
-                                      _selectItem(f);
-                                    },
-                                  ),
-                            )
-                            .toList())
-                        ..add(const Divider())),
-            ]..addAll(filteredElements.isEmpty
-                ? [_buildEmptySearchWidget(context)]
-                : filteredElements.map(
-                    (e) => SimpleDialogOption(
-                      key: Key(e.toLongString()),
-                      child: _buildOption(e),
-                      onPressed: () {
-                        _selectItem(e);
-                      },
-                    )))
-            )
-          ),
-        ],
-      );
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0)
+    ),
+    backgroundColor: widget.backgroundColor?? Theme.of(context).backgroundColor,
+    title: TextField(
+      style: widget.searchStyle,
+      decoration: widget.searchDecoration,
+      onChanged: _filterElements,
+    ),
+    children: [
+      Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 4,
+        child: ListView(
+          children: [
+            widget.favoriteElements.isEmpty
+                ? const DecoratedBox(decoration: BoxDecoration())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[]
+                      ..addAll(widget.favoriteElements
+                          .map(
+                            (f) => SimpleDialogOption(
+                                  child: _buildOption(f),
+                                  onPressed: () {
+                                    _selectItem(f);
+                                  },
+                                ),
+                          )
+                          .toList())
+                      ..add(const Divider())),
+          ]..addAll(filteredElements.isEmpty
+              ? [_buildEmptySearchWidget(context)]
+              : filteredElements.map(
+                  (e) => SimpleDialogOption(
+                    key: Key(e.toLongString()),
+                    child: _buildOption(e),
+                    onPressed: () {
+                      _selectItem(e);
+                    },
+                  )))
+          )
+        ),
+      ],
+    );
 
   Widget _buildOption(CountryCode e) {
     return Container(
@@ -89,7 +95,7 @@ class _SelectionDialogState extends State<SelectionDialog> {
         children: <Widget>[
           widget.showFlag ? Flexible(
             child: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsets.only(right: 10.0),
               child: Image.asset(
                 e.flagUri,
                 package: 'country_code_picker',
@@ -104,6 +110,7 @@ class _SelectionDialogState extends State<SelectionDialog> {
                   ? e.toCountryStringOnly()
                   : e.toLongString(),
               overflow: TextOverflow.fade,
+              style: widget.textStyle,
             ),
           ),
         ],
